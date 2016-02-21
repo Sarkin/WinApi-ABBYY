@@ -1,1 +1,1 @@
-# WinApi-ABBYY
+# ABBYY WinApi course projects
