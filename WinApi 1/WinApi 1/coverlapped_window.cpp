@@ -25,7 +25,6 @@ bool COverlappedWindow::RegisterClassW() {
 }
 
 bool COverlappedWindow::Create() {
-	COverlappedWindow* wnd = this;
 	handle = CreateWindowEx(
 		0,
 		class_name_,
