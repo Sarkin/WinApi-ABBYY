@@ -25,6 +25,7 @@ bool COverlappedWindow::RegisterClassW() {
 }
 
 bool COverlappedWindow::Create() {
+	COverlappedWindow* wnd = this;
 	handle = CreateWindowEx(
 		0,
 		class_name_,
@@ -37,7 +38,7 @@ bool COverlappedWindow::Create() {
 		NULL,
 		NULL,
 		GetModuleHandle(NULL),
-		NULL
+		this
 );
 	if (handle == NULL) {
 		return false;
@@ -55,9 +56,24 @@ void COverlappedWindow::OnDestroy() {
 
 LRESULT _stdcall COverlappedWindow::windowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) {
 	switch (message) {
-	case WM_DESTROY:
+	case WM_NCCREATE: {
+		CREATESTRUCT* cs = (CREATESTRUCT*)lParam;
+		COverlappedWindow* overlapped_window = (COverlappedWindow*)cs->lpCreateParams;
+		SetLastError(0);
+		if (SetWindowLongPtr(handle, GWLP_USERDATA, (LONG)overlapped_window) == 0 &&
+			GetLastError() != 0) {
+				return FALSE;
+		}
+		return TRUE;
+	}
+	case WM_DESTROY: {
+		COverlappedWindow* overlapped_window = (COverlappedWindow*)GetWindowLongPtr(handle, GWLP_USERDATA);
+		if (overlapped_window) {
+			overlapped_window->OnDestroy();
+		}
 		PostQuitMessage(0);
 		break;
+	}
 	default:
 		return DefWindowProc(handle, message, wParam, lParam);
 	}
