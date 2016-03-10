@@ -1,6 +1,6 @@
-#include <Windows.h>
-
 #include "coverlapped_window.h"
+
+#include <Windows.h>
 
 const LPCWSTR COverlappedWindow::class_name_ = L"OverlappedWindow";
 
@@ -8,8 +8,8 @@ COverlappedWindow::COverlappedWindow() {
 }
 
 COverlappedWindow::~COverlappedWindow() {
-	if (handle) {
-		DestroyWindow(handle);
+	if (handle_) {
+		DestroyWindow(handle_);
 	}
 }
 
@@ -25,7 +25,7 @@ bool COverlappedWindow::RegisterClassW() {
 }
 
 bool COverlappedWindow::Create() {
-	handle = CreateWindowEx(
+	CreateWindowEx(
 		0,
 		class_name_,
 		L"Sample",
@@ -39,18 +39,22 @@ bool COverlappedWindow::Create() {
 		GetModuleHandle(NULL),
 		this
 );
-	if (handle == NULL) {
+	if (handle_ == NULL) {
 		return false;
 	}
 	return true;
 }
 
 void COverlappedWindow::Show(int cmdShow) {
-	ShowWindow(handle, cmdShow);
-	UpdateWindow(handle);
+	ShowWindow(handle_, cmdShow);
+	UpdateWindow(handle_);
 }
 
 void COverlappedWindow::OnDestroy() {
+}
+
+void COverlappedWindow::OnNCCreate(HWND handle) {
+	handle_ = handle;
 }
 
 LRESULT _stdcall COverlappedWindow::windowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) {
@@ -63,6 +67,7 @@ LRESULT _stdcall COverlappedWindow::windowProc(HWND handle, UINT message, WPARAM
 			GetLastError() != 0) {
 				return FALSE;
 		}
+		overlapped_window->OnNCCreate(handle);
 		return TRUE;
 	}
 	case WM_DESTROY: {

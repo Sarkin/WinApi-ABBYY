@@ -75,9 +75,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="coverlapped_window.h" />
+    <ClInclude Include="eclipse_window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="coverlapped_window.cpp" />
+    <ClCompile Include="eclipse_window.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
