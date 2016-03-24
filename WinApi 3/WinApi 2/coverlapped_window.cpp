@@ -3,7 +3,7 @@
 #include <Windows.h>
 
 const LPCWSTR COverlappedWindow::class_name_ = L"OverlappedWindow";
-const double COverlappedWindow::deltaTime_ = 0.005;
+const double COverlappedWindow::deltaTime_ = 0.05;
 
 void COverlappedWindow::initialize() {
 	timerId_ = 0;

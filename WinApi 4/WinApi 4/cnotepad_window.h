@@ -1,14 +1,12 @@
-#ifndef WINAPI_TASK2_COVERLAPPEDWINDOW_H_
-#define WINAPI_TASK2_COVERLAPPEDWINDOW_H_
-
 #include <Windows.h>
 #include <string>
 
-class COverlappedWindow {
+#include "cedit_control_window.h"
+
+class CNotepadWindow {
 public:
-	COverlappedWindow();
-	COverlappedWindow(int ellipse_radius);
-	~COverlappedWindow();
+	CNotepadWindow();
+	~CNotepadWindow();
 
 	static bool RegisterClassW();
 
@@ -19,22 +17,19 @@ protected:
 	void OnDestroy();
 	void OnNCCreate(HWND handle);
 	void OnCreate();
-    void OnPaint();
-    void OnTimer();
+	void OnSizeChanged();
+	bool OnClose();
+	void OnCommand(WPARAM wParam, LPARAM lParam);
+
 private:
 	static const LPCWSTR class_name_;
 	HWND handle_;
+	bool edit_control_changed_;
 
-	UINT_PTR timerId_;
-    double time_;
-    static const double deltaTime_;
-    int ellipse_radius_;
-
-	void initialize();
-	void drawEllipse(HDC targetDC, int x, int y);
+	CEditControlWindow edit_control_;
 
 	virtual LRESULT __stdcall localWindowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
 	static LRESULT __stdcall windowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
-};
 
-#endif
+	void SaveEditControlContent(HWND edit_control_handle);
+};
