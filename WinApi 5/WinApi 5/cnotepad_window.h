@@ -35,4 +35,5 @@ private:
 	static LRESULT __stdcall windowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
 
 	void SaveEditControlContent(HWND edit_control_handle);
+	void SetWindowTitle();
 };

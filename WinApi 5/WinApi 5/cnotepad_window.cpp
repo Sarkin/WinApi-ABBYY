@@ -1,5 +1,6 @@
 #include <Windows.h>
 
+#include "resource.h"
 #include "cnotepad_window.h"
 
 const LPCWSTR CNotepadWindow::class_name_ = L"NotepadWindow";
@@ -27,12 +28,21 @@ bool CNotepadWindow::RegisterClassW() {
 	wnd_class.lpszClassName = class_name_;
 	wnd_class.hIcon = icon64_;
 	wnd_class.hIconSm = icon32_;
+	wnd_class.lpszMenuName = MAKEINTRESOURCE(IDR_MAIN_MENU);
 	return RegisterClassEx(&wnd_class);
+}
+
+void CNotepadWindow::SetWindowTitle() {
+	wchar_t* title = new wchar_t[256];
+	LoadString(GetModuleHandle(0), IDS_WINDOW_TITLE, title, 256);
+	SetWindowText(handle_, title);
+	delete[] title;
 }
 
 bool CNotepadWindow::Create() {
 	handle_ = CreateWindowEx(0, class_name_, L"Notepad", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
 		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, GetModuleHandle(0), this);
+	SetWindowTitle();
 	return (handle_ != NULL);
 }
 
@@ -80,7 +90,7 @@ bool CNotepadWindow::OnClose() {
 
 void CNotepadWindow::SaveEditControlContent(HWND edit_control_handle) {
 	int text_length = SendMessage(edit_control_handle, WM_GETTEXTLENGTH, 0, 0);
-	wchar_t* text = new wchar_t[text_length + 5];
+	wchar_t* text = new wchar_t[text_length + 1];
 	SendMessage(edit_control_handle, WM_GETTEXT, text_length + 1, LPARAM(text));
 
 	OPENFILENAME ofn = { };
@@ -97,13 +107,21 @@ void CNotepadWindow::SaveEditControlContent(HWND edit_control_handle) {
 	if (GetSaveFileName(&ofn)) {
 		HANDLE file_handle = CreateFile(ofn.lpstrFile, GENERIC_WRITE | GENERIC_READ,
 			FILE_SHARE_READ, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, 0);
-		WriteFile(file_handle, text, text_length + 1, NULL, NULL);
+		WriteFile(file_handle, text, (text_length + 1) * sizeof(wchar_t), NULL, NULL);
 		CloseHandle(file_handle);
 	}
 	delete[] text;
 }
 
 void CNotepadWindow::OnCommand(WPARAM wParam, LPARAM lParam) {
+	switch (LOWORD(wParam)) {
+	case ID_FILE_SAVE:
+		SaveEditControlContent(edit_control_.GetHandle());
+		break;
+	case ID_FILE_EXIT:
+		OnClose();
+		break;
+	}
 	if (HIWORD(wParam) == EN_CHANGE) {
 		edit_control_changed_ = true;
 	}
@@ -151,6 +169,8 @@ LRESULT _stdcall CNotepadWindow::localWindowProc(HWND handle, UINT message, WPAR
 	case WM_COMMAND:
 		OnCommand(wParam, lParam);
 		break;
+	case WM_KEYDOWN:
+		
 	default:
 		return DefWindowProc(handle, message, wParam, lParam);
 	}

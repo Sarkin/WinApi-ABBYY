@@ -1,8 +1,9 @@
 #include <Windows.h>
 
 #include "cnotepad_window.h"
+#include "resource.h"
 
-int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int nCmdShow) {
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow) {
 	if (!CNotepadWindow::RegisterClassW()) {
 		return -1;
 	}
@@ -12,11 +13,15 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int nCmdShow) {
 		return -1;
 	}
 	notepad_window.Show(nCmdShow);
-
+	
+	HACCEL notepad_window_accelerator = LoadAccelerators(hInstance,
+		MAKEINTRESOURCE(IDR_NOTEPAD_WINDOW_ACCELERATOR_TABLE));
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0) > 0) {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+		if (!TranslateAccelerator(msg.hwnd, notepad_window_accelerator, &msg)) {
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
     }
     return msg.wParam;
 }
