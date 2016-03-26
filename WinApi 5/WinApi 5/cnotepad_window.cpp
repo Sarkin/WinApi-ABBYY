@@ -69,8 +69,8 @@ void CNotepadWindow::OnSizeChanged() {
 	edit_control_.Resize(rect);
 }
 
-bool CNotepadWindow::OnClose() {
-	if (!edit_control_changed_) {
+bool CNotepadWindow::OnClose(bool save = true) {
+	if (!save || !edit_control_changed_) {
 		return true;
 	}
 
@@ -89,7 +89,7 @@ bool CNotepadWindow::OnClose() {
 }
 
 void CNotepadWindow::SaveEditControlContent(HWND edit_control_handle) {
-	int text_length = SendMessage(edit_control_handle, WM_GETTEXTLENGTH, 0, 0);
+	LRESULT text_length = SendMessage(edit_control_handle, WM_GETTEXTLENGTH, 0, 0);
 	wchar_t* text = new wchar_t[text_length + 1];
 	SendMessage(edit_control_handle, WM_GETTEXT, text_length + 1, LPARAM(text));
 
@@ -120,11 +120,20 @@ void CNotepadWindow::OnCommand(WPARAM wParam, LPARAM lParam) {
 		break;
 	case ID_FILE_EXIT:
 		OnClose();
+		PostQuitMessage(0);
+		break;
+	case ID_ACCELERATOR_EXIT:
+		OnClose(false);
+		PostQuitMessage(0);
 		break;
 	}
 	if (HIWORD(wParam) == EN_CHANGE) {
 		edit_control_changed_ = true;
 	}
+}
+
+HWND CNotepadWindow::GetHandle() {
+	return handle_;
 }
 
 LRESULT _stdcall CNotepadWindow::windowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) {
@@ -169,8 +178,6 @@ LRESULT _stdcall CNotepadWindow::localWindowProc(HWND handle, UINT message, WPAR
 	case WM_COMMAND:
 		OnCommand(wParam, lParam);
 		break;
-	case WM_KEYDOWN:
-		
 	default:
 		return DefWindowProc(handle, message, wParam, lParam);
 	}

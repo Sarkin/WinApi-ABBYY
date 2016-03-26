@@ -9,16 +9,16 @@ public:
 	~CNotepadWindow();
 
 	static bool RegisterClassW();
-
 	bool Create();
 	void Show(int cmdShow);
+	HWND GetHandle();
 
 protected:
 	void OnDestroy();
 	void OnNCCreate(HWND handle);
 	void OnCreate();
 	void OnSizeChanged();
-	bool OnClose();
+	bool OnClose(bool save);
 	void OnCommand(WPARAM wParam, LPARAM lParam);
 
 private:
