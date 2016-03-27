@@ -149,6 +149,7 @@
     <ClInclude Include="cedit_control_window.h" />
     <ClInclude Include="cnotepad_window.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="resource_mytext.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cedit_control_window.cpp" />
@@ -156,6 +157,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="MyText.rc" />
     <ResourceCompile Include="WinApi 5.rc" />
   </ItemGroup>
   <ItemGroup>

@@ -69,8 +69,8 @@ void CNotepadWindow::OnSizeChanged() {
 	edit_control_.Resize(rect);
 }
 
-bool CNotepadWindow::OnClose(bool save = true) {
-	if (!save || !edit_control_changed_) {
+bool CNotepadWindow::OnClose() {
+	if (!edit_control_changed_) {
 		return true;
 	}
 
@@ -123,7 +123,7 @@ void CNotepadWindow::OnCommand(WPARAM wParam, LPARAM lParam) {
 		PostQuitMessage(0);
 		break;
 	case ID_ACCELERATOR_EXIT:
-		OnClose(false);
+		OnClose();
 		PostQuitMessage(0);
 		break;
 	}

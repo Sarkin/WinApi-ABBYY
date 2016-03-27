@@ -18,7 +18,7 @@ protected:
 	void OnNCCreate(HWND handle);
 	void OnCreate();
 	void OnSizeChanged();
-	bool OnClose(bool save);
+	bool OnClose();
 	void OnCommand(WPARAM wParam, LPARAM lParam);
 
 private:
