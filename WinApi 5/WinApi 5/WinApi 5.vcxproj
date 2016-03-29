@@ -149,7 +149,6 @@
     <ClInclude Include="cedit_control_window.h" />
     <ClInclude Include="cnotepad_window.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="resource_mytext.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cedit_control_window.cpp" />
@@ -157,12 +156,14 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="MyText.rc" />
     <ResourceCompile Include="WinApi 5.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon32.ico" />
     <Image Include="icon64.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="mytextfile.bin" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

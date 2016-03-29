@@ -43,6 +43,7 @@ bool CNotepadWindow::Create() {
 	handle_ = CreateWindowEx(0, class_name_, L"Notepad", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
 		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, GetModuleHandle(0), this);
 	SetWindowTitle();
+	edit_control_.SetEditControlText();
 	return (handle_ != NULL);
 }
 

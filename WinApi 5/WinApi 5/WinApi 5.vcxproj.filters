@@ -24,9 +24,6 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource_mytext.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cedit_control_window.cpp">
@@ -43,9 +40,6 @@
     <ResourceCompile Include="WinApi 5.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="MyText.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon32.ico">
@@ -54,5 +48,10 @@
     <Image Include="icon64.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="mytextfile.bin">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
