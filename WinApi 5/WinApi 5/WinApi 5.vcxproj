@@ -146,11 +146,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="csettings_dialog.h" />
     <ClInclude Include="cedit_control_window.h" />
     <ClInclude Include="cnotepad_window.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="csettings_dialog.cpp" />
     <ClCompile Include="cedit_control_window.cpp" />
     <ClCompile Include="cnotepad_window.cpp" />
     <ClCompile Include="main.cpp" />

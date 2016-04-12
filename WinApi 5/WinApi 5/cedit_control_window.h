@@ -3,18 +3,18 @@
 
 class CEditControlWindow {
 public:
-	CEditControlWindow();
-	~CEditControlWindow();
+    CEditControlWindow();
+    ~CEditControlWindow();
 
-	bool Create(HWND parent_handle);
-	void Show(int cmdShow);
-	void Resize(const RECT& rect);
-	HWND GetHandle();
-	void SetEditControlText();
+    bool Create(HWND parent_handle);
+    void Show(int cmdShow);
+    void Resize(const RECT& rect);
+    HWND GetHandle();
+    void SetEditControlText();
 
 private:
-	static const LPCWSTR class_name_;
-	HWND handle_;
+    static const LPCWSTR class_name_;
+    HWND handle_;
 
-	void LoadFileInResource(int name, int type, DWORD& size, const wchar_t*& data);
+    void LoadFileInResource(int name, int type, DWORD& size, const wchar_t*& data);
 };
