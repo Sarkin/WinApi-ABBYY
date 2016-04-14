@@ -61,9 +61,9 @@ void CNotepadWindow::Show(int cmdShow) {
 void CNotepadWindow::OnDestroy() {
     DestroyIcon(icon32_);
     DestroyIcon(icon64_);
-    if (current_brush_) {
-        DeleteObject(current_brush_);
-    }
+    DeleteObject(current_brush_);
+    HFONT font = reinterpret_cast<HFONT>(SendMessage(handle_, WM_GETFONT, 0, 0));
+    DeleteObject(font);
     PostQuitMessage(0);
 }
 
@@ -103,9 +103,7 @@ bool CNotepadWindow::ConfirmClose() {
 LRESULT CNotepadWindow::OnColorEdit(HDC hdc) {
     SetBkColor(hdc, background_color_);
     SetTextColor(hdc, font_color_);
-    if (current_brush_) {
-        DeleteObject(current_brush_);
-    }
+    DeleteObject(current_brush_);
     current_brush_ = CreateSolidBrush(background_color_);
     return (LRESULT)current_brush_;
 }

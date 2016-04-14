@@ -48,7 +48,6 @@ bool CSettingsDialog::OnDestroy() {
     bool destroyed = DestroyWindow(handle_);
     handle_ = 0;
     preview_ = false;
-    DeleteObject(hfont_);
     return destroyed;
 }
 
@@ -68,9 +67,11 @@ bool CSettingsDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
         return true;
     case IDC_BUTTON_FONT:
         chooseColor(new_settings_.font_color);
+        applySettings(new_settings_, preview_);
         return true;
     case IDC_BUTTON_BACKGROUND:
         chooseColor(new_settings_.background_color);
+        applySettings(new_settings_, preview_);
         return true;
     }
     applySettings(new_settings_, preview_);
