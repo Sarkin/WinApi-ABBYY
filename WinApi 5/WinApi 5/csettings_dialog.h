@@ -7,7 +7,14 @@ public:
     ~CSettingsDialog();
 
     void Show(HWND handle);
-    virtual INT_PTR CALLBACK localDialogProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
+
+protected:
+    void OnCommand(WPARAM, LPARAM);
+
+private:
+    INT_PTR nResult_;
+
     static INT_PTR CALLBACK dialogProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
+    virtual INT_PTR CALLBACK localDialogProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
 };
 

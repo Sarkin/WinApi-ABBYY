@@ -19,8 +19,9 @@ protected:
     void OnNCCreate(HWND handle);
     void OnCreate();
     void OnSizeChanged();
-    bool OnClose();
+    void OnClose();
     void OnCommand(WPARAM wParam, LPARAM lParam);
+    bool ConfirmClose();
 
 private:
     static const LPCWSTR class_name_;
@@ -36,7 +37,7 @@ private:
     virtual LRESULT __stdcall localWindowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
     static LRESULT __stdcall windowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
 
-    void SaveEditControlContent(HWND edit_control_handle);
+    bool SaveEditControlContent(HWND edit_control_handle);
     void SetWindowTitle();
     void ShowSettings();
 };

@@ -74,16 +74,11 @@ void CNotepadWindow::OnSizeChanged() {
     edit_control_.Resize(rect);
 }
 
-bool CNotepadWindow::OnClose() {
-    if (!edit_control_changed_) {
-        return true;
-    }
-
+bool CNotepadWindow::ConfirmClose() {
     int clicked = MessageBox(handle_, L"Save the text?", L"Confirmation", MB_YESNOCANCEL);
     switch (clicked) {
     case IDYES:
-        SaveEditControlContent(edit_control_.GetHandle());
-        return true;
+        return SaveEditControlContent(edit_control_.GetHandle());
     case IDNO:
         return true;
     case IDCANCEL:
@@ -93,7 +88,13 @@ bool CNotepadWindow::OnClose() {
     }
 }
 
-void CNotepadWindow::SaveEditControlContent(HWND edit_control_handle) {
+void CNotepadWindow::OnClose() {
+    if (!edit_control_changed_ || ConfirmClose()) {
+        DestroyWindow(handle_);
+    }
+}
+
+bool CNotepadWindow::SaveEditControlContent(HWND edit_control_handle) {
     LRESULT text_length = SendMessage(edit_control_handle, WM_GETTEXTLENGTH, 0, 0);
     wchar_t* text = new wchar_t[text_length + 1];
     SendMessage(edit_control_handle, WM_GETTEXT, text_length + 1, LPARAM(text));
@@ -109,7 +110,8 @@ void CNotepadWindow::SaveEditControlContent(HWND edit_control_handle) {
     ofn.Flags = OFN_EXPLORER | OFN_HIDEREADONLY;
     ofn.lpstrDefExt = (LPCWSTR)L"txt";
 
-    if (GetSaveFileName(&ofn)) {
+    bool saved = GetSaveFileName(&ofn);
+    if (saved) {
         HANDLE file_handle = CreateFile(ofn.lpstrFile, GENERIC_WRITE | GENERIC_READ,
             FILE_SHARE_READ, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, 0);
         unsigned short bom = 0xFEFF;
@@ -118,6 +120,7 @@ void CNotepadWindow::SaveEditControlContent(HWND edit_control_handle) {
         CloseHandle(file_handle);
     }
     delete[] text;
+    return saved;
 }
 
 void CNotepadWindow::OnCommand(WPARAM wParam, LPARAM lParam) {
@@ -127,14 +130,12 @@ void CNotepadWindow::OnCommand(WPARAM wParam, LPARAM lParam) {
         break;
     case ID_FILE_EXIT:
         OnClose();
-        PostQuitMessage(0);
         break;
     case ID_VIEW_SETTINGS:
         ShowSettings();
         break;
     case ID_ACCELERATOR_EXIT:
         OnClose();
-        PostQuitMessage(0);
         break;
     }
     if (HIWORD(wParam) == EN_CHANGE) {
@@ -181,9 +182,7 @@ LRESULT _stdcall CNotepadWindow::localWindowProc(HWND handle, UINT message, WPAR
         OnSizeChanged();
         break;
     case WM_CLOSE:
-        if (OnClose()) {
-            return DefWindowProc(handle, message, wParam, lParam);
-        }
+        OnClose();
         break;
     case WM_COMMAND:
         OnCommand(wParam, lParam);
