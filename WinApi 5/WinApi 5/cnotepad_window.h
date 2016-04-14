@@ -13,6 +13,10 @@ public:
     bool Create();
     void Show(int cmdShow);
     HWND GetHandle();
+    HWND GetEditControlHandle();
+    HWND GetSettingsDialogHandle();
+    BYTE GetOpacity();
+    void SetOpacity(BYTE);
 
 protected:
     void OnDestroy();
@@ -27,6 +31,7 @@ private:
     static const LPCWSTR class_name_;
     HWND handle_;
     bool edit_control_changed_;
+    BYTE opacity_;
 
     static const HICON icon32_;
     static const HICON icon64_;
@@ -37,7 +42,7 @@ private:
     virtual LRESULT __stdcall localWindowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
     static LRESULT __stdcall windowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
 
-    bool SaveEditControlContent(HWND edit_control_handle);
-    void SetWindowTitle();
-    void ShowSettings();
+    bool saveEditControlContent(HWND edit_control_handle);
+    void setWindowTitle();
+    void showSettings();
 };

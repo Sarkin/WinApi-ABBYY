@@ -22,8 +22,8 @@ bool CEditControlWindow::Create(HWND parent_handle) {
     return (handle_ != NULL);
 }
 
-void CEditControlWindow::Show(int cmdShow) {
-    ShowWindow(handle_, cmdShow);
+void CEditControlWindow::Show() {
+    ShowWindow(handle_, SW_SHOW);
     SetFocus(handle_);
 }
 
@@ -36,7 +36,7 @@ HWND CEditControlWindow::GetHandle() {
     return handle_;
 }
 
-void CEditControlWindow::LoadFileInResource(int name, int type, DWORD& size, const wchar_t*& data) {
+void CEditControlWindow::loadFileInResource(int name, int type, DWORD& size, const wchar_t*& data) {
     HMODULE handle = ::GetModuleHandle(NULL);
     HRSRC rc = ::FindResource(handle, MAKEINTRESOURCE(name),
         MAKEINTRESOURCE(type));
@@ -48,7 +48,7 @@ void CEditControlWindow::LoadFileInResource(int name, int type, DWORD& size, con
 void CEditControlWindow::SetEditControlText() {
     DWORD size = 0;
     const wchar_t* data = NULL;
-    LoadFileInResource(IDR_MYTEXTFILE, TEXTFILE, size, data);
+    loadFileInResource(IDR_MYTEXTFILE, TEXTFILE, size, data);
     DWORD length = size / sizeof(wchar_t);
     wchar_t* buffer = new wchar_t[length + 1];
     ::memcpy(buffer, data, size);

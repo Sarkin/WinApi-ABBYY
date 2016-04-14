@@ -18,7 +18,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow) {
         MAKEINTRESOURCE(IDR_NOTEPAD_WINDOW_ACCELERATOR_TABLE));
     MSG msg;
     while (GetMessage(&msg, NULL, 0, 0) > 0) {
-        if (!TranslateAcceleratorW(notepad_window.GetHandle(), notepad_window_accelerator, &msg)) {
+        if (!TranslateAcceleratorW(notepad_window.GetHandle(), notepad_window_accelerator, &msg)
+            && !IsDialogMessage(notepad_window.GetSettingsDialogHandle(), &msg)) {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }

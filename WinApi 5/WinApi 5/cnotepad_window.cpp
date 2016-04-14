@@ -32,28 +32,29 @@ bool CNotepadWindow::RegisterClassW() {
     return RegisterClassEx(&wnd_class);
 }
 
-void CNotepadWindow::SetWindowTitle() {
+void CNotepadWindow::setWindowTitle() {
     wchar_t* title = new wchar_t[256];
     LoadString(GetModuleHandle(0), IDS_WINDOW_TITLE, title, 256);
     SetWindowText(handle_, title);
     delete[] title;
 }
 
-void CNotepadWindow::ShowSettings() {
-	settings_dialog_.Show(handle_);
+void CNotepadWindow::showSettings() {
+	settings_dialog_.Create(handle_);
 }
 
 bool CNotepadWindow::Create() {
-    handle_ = CreateWindowEx(0, class_name_, L"Notepad", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
+    handle_ = CreateWindowEx(WS_EX_LAYERED, class_name_, L"Notepad", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, GetModuleHandle(0), this);
-    SetWindowTitle();
+    SetOpacity(255);
+    setWindowTitle();
     edit_control_.SetEditControlText();
     return (handle_ != NULL);
 }
 
 void CNotepadWindow::Show(int cmdShow) {
     ShowWindow(handle_, cmdShow);
-    edit_control_.Show(cmdShow);
+    edit_control_.Show();
 }
 
 void CNotepadWindow::OnDestroy() {
@@ -66,6 +67,9 @@ void CNotepadWindow::OnNCCreate(HWND handle) {
 
 void CNotepadWindow::OnCreate() {
     edit_control_.Create(handle_);
+    HFONT hFont = CreateFont(20, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS,
+        CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Arial");
+    SendMessage(edit_control_.GetHandle(), WM_SETFONT, reinterpret_cast<WPARAM>(hFont), TRUE);
 }
 
 void CNotepadWindow::OnSizeChanged() {
@@ -78,7 +82,7 @@ bool CNotepadWindow::ConfirmClose() {
     int clicked = MessageBox(handle_, L"Save the text?", L"Confirmation", MB_YESNOCANCEL);
     switch (clicked) {
     case IDYES:
-        return SaveEditControlContent(edit_control_.GetHandle());
+        return saveEditControlContent(edit_control_.GetHandle());
     case IDNO:
         return true;
     case IDCANCEL:
@@ -94,12 +98,12 @@ void CNotepadWindow::OnClose() {
     }
 }
 
-bool CNotepadWindow::SaveEditControlContent(HWND edit_control_handle) {
+bool CNotepadWindow::saveEditControlContent(HWND edit_control_handle) {
     LRESULT text_length = SendMessage(edit_control_handle, WM_GETTEXTLENGTH, 0, 0);
     wchar_t* text = new wchar_t[text_length + 1];
     SendMessage(edit_control_handle, WM_GETTEXT, text_length + 1, LPARAM(text));
 
-    OPENFILENAME ofn = { };
+    OPENFILENAME ofn = {};
     wchar_t szFileName[MAX_PATH] = L"";
 
     ofn.lStructSize = sizeof(ofn);
@@ -126,13 +130,13 @@ bool CNotepadWindow::SaveEditControlContent(HWND edit_control_handle) {
 void CNotepadWindow::OnCommand(WPARAM wParam, LPARAM lParam) {
     switch (LOWORD(wParam)) {
     case ID_FILE_SAVE:
-        SaveEditControlContent(edit_control_.GetHandle());
+        saveEditControlContent(edit_control_.GetHandle());
         break;
     case ID_FILE_EXIT:
         OnClose();
         break;
     case ID_VIEW_SETTINGS:
-        ShowSettings();
+        showSettings();
         break;
     case ID_ACCELERATOR_EXIT:
         OnClose();
@@ -145,6 +149,23 @@ void CNotepadWindow::OnCommand(WPARAM wParam, LPARAM lParam) {
 
 HWND CNotepadWindow::GetHandle() {
     return handle_;
+}
+
+HWND CNotepadWindow::GetEditControlHandle() {
+    return edit_control_.GetHandle();
+}
+
+HWND CNotepadWindow::GetSettingsDialogHandle() {
+    return settings_dialog_.GetHandle();
+}
+
+BYTE CNotepadWindow::GetOpacity() {
+    return opacity_;
+}
+
+void CNotepadWindow::SetOpacity(BYTE opacity) {
+    opacity_ = opacity;
+    SetLayeredWindowAttributes(handle_, 0, opacity, LWA_ALPHA);
 }
 
 LRESULT _stdcall CNotepadWindow::windowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) {

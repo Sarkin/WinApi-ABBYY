@@ -1,16 +1,108 @@
 #include "csettings_dialog.h"
 
+#include <Commctrl.h>
+
 #include "resource.h"
+#include "cnotepad_window.h"
 
 CSettingsDialog::CSettingsDialog() {
+    handle_ = 0;
+    preview_ = false;
+    current_settings_ = {};
+    new_settings_ = {};
 }
 
 CSettingsDialog::~CSettingsDialog() {
 }
 
-void CSettingsDialog::Show(HWND handle) {
-	nResult_ = DialogBoxParam(GetModuleHandle(0), MAKEINTRESOURCE(IDD_SETTINGS_DIALOG), handle,
-        reinterpret_cast<DLGPROC>(dialogProc), (LPARAM)this);
+void CSettingsDialog::Create(HWND parent_handle) {
+    if (handle_) {
+        SetFocus(handle_);
+        return;
+    }
+    parent_handle_ = parent_handle;
+    edit_control_handle_ = reinterpret_cast<CNotepadWindow*>(GetWindowLongPtr(parent_handle,
+        GWLP_USERDATA))->GetEditControlHandle();
+	handle_ = CreateDialogParam(GetModuleHandle(0), MAKEINTRESOURCE(IDD_SETTINGS_DIALOG), parent_handle,
+        reinterpret_cast<DLGPROC>(dialogProc), reinterpret_cast<LPARAM>(this));
+    show();
+}
+
+HWND CSettingsDialog::GetHandle() {
+    return handle_;
+}
+
+void CSettingsDialog::OnInitialize(HWND handle) {
+    handle_ = handle;
+    SendMessage(GetDlgItem(handle_, IDC_SLIDER_WINDOW_TRANSPARENCY), TBM_SETRANGE, true, MAKELONG(0, 255));
+    SendMessage(GetDlgItem(handle_, IDC_SLIDER_FONTSIZE), TBM_SETRANGE, true, MAKELONG(8, 72));
+    getCurrentSettings();
+    SendMessage(GetDlgItem(handle_, IDC_SLIDER_WINDOW_TRANSPARENCY), TBM_SETPOS, true, (LPARAM)current_settings_.opacity);
+    SendMessage(GetDlgItem(handle_, IDC_SLIDER_FONTSIZE), TBM_SETPOS, true, (LPARAM)current_settings_.font.lfHeight);
+    new_settings_ = current_settings_;
+}
+
+bool CSettingsDialog::OnDestroy() {
+    bool destroyed = DestroyWindow(handle_);
+    handle_ = 0;
+    preview_ = false;
+    DeleteObject(hfont_);
+    return destroyed;
+}
+
+bool CSettingsDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
+    switch (LOWORD(wParam)) {
+    case IDCANCEL:
+        applySettings(current_settings_);
+        OnDestroy();
+        return true;
+    case IDOK:
+        applySettings(new_settings_);
+        OnDestroy();
+        return true;
+    case IDC_CHECK_PREVIEW:
+        preview_ = IsDlgButtonChecked(handle_, IDC_CHECK_PREVIEW) == BST_CHECKED;
+        applySettings((preview_)? new_settings_: current_settings_);
+        return true;
+    }
+    applySettings(new_settings_, preview_);
+    return false;
+}
+
+void CSettingsDialog::OnScroll(WPARAM wParam, LPARAM lParam) {
+    HWND slider_handle = reinterpret_cast<HWND>(lParam);
+    if (slider_handle == GetDlgItem(handle_, IDC_SLIDER_WINDOW_TRANSPARENCY)) {
+        new_settings_.opacity = (BYTE)SendMessage(slider_handle, TBM_GETPOS, 0, 0);
+    } else if (slider_handle == GetDlgItem(handle_, IDC_SLIDER_FONTSIZE)) {
+        new_settings_.font.lfHeight = SendMessage(slider_handle, TBM_GETPOS, 0, 0);
+    }
+    applySettings(new_settings_, preview_);
+}
+
+void CSettingsDialog::show() {
+    ShowWindow(handle_, SW_SHOW);
+}
+
+void CSettingsDialog::hide() {
+    ShowWindow(handle_, SW_HIDE);
+}
+
+void CSettingsDialog::getCurrentSettings() {
+    CNotepadWindow* notepad_window = reinterpret_cast<CNotepadWindow*>(GetWindowLongPtr(parent_handle_, GWLP_USERDATA));
+    current_settings_.opacity = notepad_window->GetOpacity();
+    hfont_ = reinterpret_cast<HFONT>(SendMessage(edit_control_handle_, WM_GETFONT, 0, 0));
+    GetObject(hfont_, sizeof(LOGFONT), &current_settings_.font);
+}
+
+void CSettingsDialog::applySettings(const Settings& settings, bool preview) {
+    if (!preview) {
+        return;
+    }
+    CNotepadWindow* notepad_window = reinterpret_cast<CNotepadWindow*>(GetWindowLongPtr(parent_handle_, GWLP_USERDATA));
+    notepad_window->SetOpacity(settings.opacity);
+    DeleteObject(hfont_);
+    hfont_ = CreateFontIndirect(&settings.font);
+    SendMessage(edit_control_handle_, WM_SETFONT, reinterpret_cast<WPARAM>(hfont_), TRUE);
 }
 
 INT_PTR CALLBACK CSettingsDialog::dialogProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) {
@@ -22,6 +114,7 @@ INT_PTR CALLBACK CSettingsDialog::dialogProc(HWND handle, UINT message, WPARAM w
             GetLastError() != 0) {
             return FALSE;
         }
+        settings_dialog->OnInitialize(handle);
         return TRUE;
     }
     default:
@@ -34,16 +127,13 @@ INT_PTR CALLBACK CSettingsDialog::dialogProc(HWND handle, UINT message, WPARAM w
     return 0;
 }
 
-void CSettingsDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
-
-}
-
 INT_PTR CALLBACK CSettingsDialog::localDialogProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
     case WM_COMMAND:
-        OnCommand(wParam, lParam);
-    default:
-        return FALSE;
+        return OnCommand(wParam, lParam);
+    case WM_HSCROLL:
+        OnScroll(wParam, lParam);
+        return TRUE;
     }
-    return 0;
+    return FALSE;
 }
