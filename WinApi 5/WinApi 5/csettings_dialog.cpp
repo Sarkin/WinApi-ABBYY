@@ -5,6 +5,8 @@
 #include "resource.h"
 #include "cnotepad_window.h"
 
+COLORREF CSettingsDialog::custom_colors_[16] = { 0 };
+
 CSettingsDialog::CSettingsDialog() {
     handle_ = 0;
     preview_ = false;
@@ -64,6 +66,12 @@ bool CSettingsDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
         preview_ = IsDlgButtonChecked(handle_, IDC_CHECK_PREVIEW) == BST_CHECKED;
         applySettings((preview_)? new_settings_: current_settings_);
         return true;
+    case IDC_BUTTON_FONT:
+        chooseColor(new_settings_.font_color);
+        return true;
+    case IDC_BUTTON_BACKGROUND:
+        chooseColor(new_settings_.background_color);
+        return true;
     }
     applySettings(new_settings_, preview_);
     return false;
@@ -92,6 +100,8 @@ void CSettingsDialog::getCurrentSettings() {
     current_settings_.opacity = notepad_window->GetOpacity();
     hfont_ = reinterpret_cast<HFONT>(SendMessage(edit_control_handle_, WM_GETFONT, 0, 0));
     GetObject(hfont_, sizeof(LOGFONT), &current_settings_.font);
+    current_settings_.background_color = notepad_window->GetBackgroundColor();
+    current_settings_.font_color = notepad_window->GetFontColor();
 }
 
 void CSettingsDialog::applySettings(const Settings& settings, bool preview) {
@@ -103,6 +113,20 @@ void CSettingsDialog::applySettings(const Settings& settings, bool preview) {
     DeleteObject(hfont_);
     hfont_ = CreateFontIndirect(&settings.font);
     SendMessage(edit_control_handle_, WM_SETFONT, reinterpret_cast<WPARAM>(hfont_), TRUE);
+    notepad_window->SetFontColor(settings.font_color);
+    notepad_window->SetBackgroundColor(settings.background_color);
+}
+
+void CSettingsDialog::chooseColor(DWORD& color) {
+    CHOOSECOLOR choose_color = {};
+    choose_color.hwndOwner = handle_;
+    choose_color.lStructSize = sizeof(CHOOSECOLOR);
+    choose_color.rgbResult = color;
+    choose_color.Flags = CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT;
+    choose_color.lpCustColors = custom_colors_;
+    if (ChooseColor(&choose_color)) {
+        color = choose_color.rgbResult;
+    }
 }
 
 INT_PTR CALLBACK CSettingsDialog::dialogProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) {

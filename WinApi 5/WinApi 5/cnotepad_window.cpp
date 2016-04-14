@@ -12,6 +12,7 @@ const HICON CNotepadWindow::icon64_ = (HICON)LoadImage(GetModuleHandle(0), L"ico
 CNotepadWindow::CNotepadWindow() {
     edit_control_ = CEditControlWindow();
     edit_control_changed_ = false;
+    current_brush_ = 0;
 }
 
 CNotepadWindow::~CNotepadWindow() {
@@ -58,6 +59,11 @@ void CNotepadWindow::Show(int cmdShow) {
 }
 
 void CNotepadWindow::OnDestroy() {
+    DestroyIcon(icon32_);
+    DestroyIcon(icon64_);
+    if (current_brush_) {
+        DeleteObject(current_brush_);
+    }
     PostQuitMessage(0);
 }
 
@@ -67,6 +73,8 @@ void CNotepadWindow::OnNCCreate(HWND handle) {
 
 void CNotepadWindow::OnCreate() {
     edit_control_.Create(handle_);
+    font_color_ = RGB(0, 0, 0);
+    background_color_ = RGB(255, 255, 255);
     HFONT hFont = CreateFont(20, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS,
         CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Arial");
     SendMessage(edit_control_.GetHandle(), WM_SETFONT, reinterpret_cast<WPARAM>(hFont), TRUE);
@@ -90,6 +98,16 @@ bool CNotepadWindow::ConfirmClose() {
     default:
         return false;
     }
+}
+
+LRESULT CNotepadWindow::OnColorEdit(HDC hdc) {
+    SetBkColor(hdc, background_color_);
+    SetTextColor(hdc, font_color_);
+    if (current_brush_) {
+        DeleteObject(current_brush_);
+    }
+    current_brush_ = CreateSolidBrush(background_color_);
+    return (LRESULT)current_brush_;
 }
 
 void CNotepadWindow::OnClose() {
@@ -163,6 +181,22 @@ BYTE CNotepadWindow::GetOpacity() {
     return opacity_;
 }
 
+DWORD CNotepadWindow::GetBackgroundColor() {
+    return background_color_;
+}
+
+DWORD CNotepadWindow::GetFontColor() {
+    return font_color_;
+}
+
+void CNotepadWindow::SetBackgroundColor(DWORD background_color) {
+    background_color_ = background_color;
+}
+
+void CNotepadWindow::SetFontColor(DWORD font_color) {
+    font_color_ = font_color;
+}
+
 void CNotepadWindow::SetOpacity(BYTE opacity) {
     opacity_ = opacity;
     SetLayeredWindowAttributes(handle_, 0, opacity, LWA_ALPHA);
@@ -208,6 +242,8 @@ LRESULT _stdcall CNotepadWindow::localWindowProc(HWND handle, UINT message, WPAR
     case WM_COMMAND:
         OnCommand(wParam, lParam);
         break;
+    case WM_CTLCOLOREDIT:
+        return OnColorEdit(reinterpret_cast<HDC>(wParam));
     default:
         return DefWindowProc(handle, message, wParam, lParam);
     }

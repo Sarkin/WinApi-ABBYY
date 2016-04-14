@@ -5,6 +5,8 @@
 struct Settings {
     BYTE opacity;
     LOGFONT font;
+    DWORD font_color;
+    DWORD background_color;
 };
 
 class CSettingsDialog {
@@ -30,11 +32,13 @@ private:
     Settings new_settings_;
     HFONT hfont_;
     bool preview_;
+    static COLORREF custom_colors_[16];
 
     void show();
     void hide();
     void getCurrentSettings();
     void applySettings(const Settings&, bool preview = true);
+    void chooseColor(DWORD&);
 
     static INT_PTR CALLBACK dialogProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
     virtual INT_PTR CALLBACK localDialogProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);

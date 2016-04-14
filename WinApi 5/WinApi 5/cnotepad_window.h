@@ -16,6 +16,10 @@ public:
     HWND GetEditControlHandle();
     HWND GetSettingsDialogHandle();
     BYTE GetOpacity();
+    DWORD GetBackgroundColor();
+    DWORD GetFontColor();
+    void SetBackgroundColor(DWORD);
+    void SetFontColor(DWORD);
     void SetOpacity(BYTE);
 
 protected:
@@ -26,12 +30,16 @@ protected:
     void OnClose();
     void OnCommand(WPARAM wParam, LPARAM lParam);
     bool ConfirmClose();
+    LRESULT OnColorEdit(HDC);
 
 private:
     static const LPCWSTR class_name_;
     HWND handle_;
     bool edit_control_changed_;
     BYTE opacity_;
+    DWORD background_color_;
+    DWORD font_color_;
+    HBRUSH current_brush_;
 
     static const HICON icon32_;
     static const HICON icon64_;
