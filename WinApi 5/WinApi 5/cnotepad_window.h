@@ -53,4 +53,5 @@ private:
     bool saveEditControlContent(HWND edit_control_handle);
     void setWindowTitle();
     void showSettings();
+    void showWordCount();
 };

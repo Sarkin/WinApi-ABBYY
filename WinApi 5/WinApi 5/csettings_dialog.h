@@ -7,6 +7,12 @@ struct Settings {
     LOGFONT font;
     DWORD font_color;
     DWORD background_color;
+
+    Settings() {
+        opacity = 0;
+        font_color = 0;
+        background_color = 0;
+    }
 };
 
 class CSettingsDialog {

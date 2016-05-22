@@ -123,7 +123,7 @@ void CSettingsDialog::chooseColor(DWORD& color) {
     choose_color.hwndOwner = handle_;
     choose_color.lStructSize = sizeof(CHOOSECOLOR);
     choose_color.rgbResult = color;
-    choose_color.Flags = CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT;
+    choose_color.Flags = CC_ANYCOLOR;
     choose_color.lpCustColors = custom_colors_;
     if (ChooseColor(&choose_color)) {
         color = choose_color.rgbResult;

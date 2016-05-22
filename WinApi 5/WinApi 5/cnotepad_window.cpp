@@ -44,6 +44,26 @@ void CNotepadWindow::showSettings() {
 	settings_dialog_.Create(handle_);
 }
 
+void CNotepadWindow::showWordCount() {
+    LRESULT text_length = SendMessage(edit_control_.GetHandle(), WM_GETTEXTLENGTH, 0, 0);
+    wchar_t* text = new wchar_t[text_length + 1];
+    SendMessage(edit_control_.GetHandle(), WM_GETTEXT, text_length + 1, LPARAM(text));
+
+    char buffer[20];
+    HMODULE WordsCountDllHandle = LoadLibrary(L"WordsCountDll.dll");
+    
+    typedef int(*LPWORDSCOUNT)(const wchar_t* text);
+    LPWORDSCOUNT lpWordsCount = (LPWORDSCOUNT)GetProcAddress(WordsCountDllHandle, "WordsCount");
+    DWORD y = GetLastError();
+    _itoa_s(lpWordsCount(text), buffer, 10);//WordsCount(text), buffer, 10);
+    wchar_t wbuffer[20];
+    size_t res;
+    mbstowcs_s(&res, wbuffer, buffer, strlen(buffer) + 1);
+    LPCWSTR ptr = wbuffer;
+    MessageBox(NULL, wbuffer, L"Word Count", 0);
+    delete[] text;
+}
+
 bool CNotepadWindow::Create() {
     handle_ = CreateWindowEx(WS_EX_LAYERED, class_name_, L"Notepad", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, GetModuleHandle(0), this);
@@ -153,6 +173,9 @@ void CNotepadWindow::OnCommand(WPARAM wParam, LPARAM lParam) {
         break;
     case ID_VIEW_SETTINGS:
         showSettings();
+        break;
+    case ID_VIEW_WORDCOUNT:
+        showWordCount();
         break;
     case ID_ACCELERATOR_EXIT:
         OnClose();
