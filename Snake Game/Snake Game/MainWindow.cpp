@@ -1,4 +1,4 @@
-#include "cmain_window.h"
+#include "MainWindow.h"
 
 const LPCWSTR CMainWindow::class_name_ = L"Main Window";
 
@@ -28,7 +28,7 @@ void CMainWindow::Show(int cmdShow) {
 }
 
 void CMainWindow::OnCreate() {
-    g_snake_ = new SnakeGame(GetModuleHandle(0), handle_);
+    g_snake_ = CSnakeGame(GetModuleHandle(0), handle_);
 }
 
 void CMainWindow::OnDestroy() {
@@ -38,8 +38,8 @@ void CMainWindow::OnNCCreate(HWND handle) {
     handle_ = handle;
 }
 
-void CMainWindow::Update(double elapsed_time) {
-
+void CMainWindow::Update() {
+    g_snake_.Update();
 }
 
 HWND CMainWindow::GetHandle() {

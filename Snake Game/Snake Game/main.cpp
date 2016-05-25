@@ -1,6 +1,6 @@
 #include <Windows.h>
 
-#include "cmain_window.h"
+#include "MainWindow.h"
 
 int Run(CMainWindow&);
 
@@ -24,12 +24,11 @@ int Run(CMainWindow& main_window) {
         MessageBox(0, L"Performance timer does not exist!", L"Error!", MB_OK);
         return 0;
     }
+    __int64 clocks_per_frame = timer_frequency * 10;
 
     __int64 curr_count;
     __int64 old_count;
-    QueryPerformanceCounter((LARGE_INTEGER *)&curr_count);
-
-    double elapsed_time = 0.0;
+    QueryPerformanceCounter((LARGE_INTEGER *)&old_count);
 
     MSG msg;
     ZeroMemory(&msg, sizeof(MSG));
@@ -38,11 +37,15 @@ int Run(CMainWindow& main_window) {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         } else {
-            old_count = curr_count;
             QueryPerformanceCounter((LARGE_INTEGER *)&curr_count);
-            elapsed_time += (double)((curr_count - old_count) * timer_frequency);
+            if (curr_count > old_count) {
+                main_window.Update();
 
-            main_window.Update(elapsed_time);
+                /*
+                DO WORK
+                */
+                old_count += clocks_per_frame;
+            }
         }
     }
     return (int)msg.wParam;

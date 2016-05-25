@@ -146,13 +146,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="cmain_window.cpp" />
-    <ClCompile Include="csnake_game.cpp" />
+    <ClCompile Include="Body.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="Head.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="Motion.cpp" />
+    <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="SnakeGame.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Snake.cpp" />
+    <ClCompile Include="System.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cmain_window.h" />
-    <ClInclude Include="csnake_game.h" />
+    <ClInclude Include="Body.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="Head.h" />
+    <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="Motion.h" />
+    <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="SnakeGame.h" />
+    <ClInclude Include="Grid.h" />
+    <ClInclude Include="Snake.h" />
+    <ClInclude Include="System.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
