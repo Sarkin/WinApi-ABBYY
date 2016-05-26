@@ -151,12 +151,11 @@
     <ClCompile Include="Head.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Motion.cpp" />
-    <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="SnakeGame.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Snake.cpp" />
-    <ClCompile Include="System.cpp" />
+    <ClCompile Include="Trail.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Body.h" />
@@ -170,6 +169,7 @@
     <ClInclude Include="Grid.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="System.h" />
+    <ClInclude Include="Trail.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

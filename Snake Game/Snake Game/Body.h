@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Component.h"
+#include "Entity.h"
 #include "Motion.h"
 
-class CBody : public  CComponent {
+class CBody : public  CEntity {
 public:
     CBody();
+    CBody(CMotion motion, int timer);
     ~CBody();
 
     void Update();

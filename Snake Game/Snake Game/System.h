@@ -1,15 +1,13 @@
 #pragma once
 
 #include "Entity.h"
-#include "ObjectManager.h"
-
-typedef CObjectManager<CEntity> EntityManager;
+#include "SnakeGame.h"
 
 class CSystem {
 public:
-    CSystem();
-    ~CSystem();
+    CSystem() { }
+    virtual ~CSystem() { }
 
-    virtual void Run(EntityManager& em) = 0;
+    virtual void Run(EntityManager& em, CSnakeGame gsnake) = 0;
 };
 

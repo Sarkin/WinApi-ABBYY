@@ -13,7 +13,7 @@ public:
     CMotion();
     ~CMotion();
 
-    void UpdateDirection(Direction d);
+    void SetDirection(Direction d);
     void Update();
 private:
     int x_;

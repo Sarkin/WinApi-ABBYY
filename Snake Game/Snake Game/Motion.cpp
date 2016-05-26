@@ -1,12 +1,14 @@
 #include "Motion.h"
 
-
-
 CMotion::CMotion() {
 }
 
 
 CMotion::~CMotion() {
+}
+
+void CMotion::SetDirection(Direction d) {
+    d_ = d;
 }
 
 void CMotion::Update() {

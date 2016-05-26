@@ -10,6 +10,9 @@ public:
 
     void Update();
 
+    CMotion GetMotion() const;
+    int GetLength() const;
+
 private:
     CMotion motion_;
     int length_;
