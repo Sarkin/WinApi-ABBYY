@@ -1,12 +1,8 @@
 #pragma once
 
-#include "System.h"
+#include "SnakeGame.h"
 
-class CTrail : public CSystem {
-public:
-    CTrail();
-    virtual ~CTrail();
-
-    void Run(EntityManager& em);
-};
+namespace Trail {
+    void Run(EntityManager& em, CSnakeGame& gsnake);
+}
 

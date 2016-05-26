@@ -13,6 +13,7 @@ public:
     bool Create();
     void Show(int cmdShow);
     void Update();
+    void Draw();
     HWND GetHandle();
 
 protected:

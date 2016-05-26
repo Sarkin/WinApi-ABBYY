@@ -2,7 +2,7 @@
 
 const LPCWSTR CMainWindow::class_name_ = L"Main Window";
 
-CMainWindow::CMainWindow() {
+CMainWindow::CMainWindow() : g_snake_(50, 50) {
 }
 
 CMainWindow::~CMainWindow() {
@@ -18,8 +18,13 @@ bool CMainWindow::RegisterClassW() {
 }
 
 bool CMainWindow::Create() {
-    handle_ = CreateWindowEx(0, class_name_, L"Notepad", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
-        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, GetModuleHandle(0), this);
+    DWORD dwStyle = WS_OVERLAPPEDWINDOW&~(WS_MAXIMIZEBOX | WS_THICKFRAME);
+    std::pair<int, int > grid_size = g_snake_.GetGridSize();
+    int tile_sz = g_snake_.GetTileSize();
+    RECT rc = { 0, 0, grid_size.second * tile_sz, grid_size.first * tile_sz };
+    AdjustWindowRect(&rc, dwStyle, FALSE);
+    handle_ = CreateWindowEx(0, class_name_, L"Snake Game",  dwStyle | WS_VISIBLE, 0,
+        0, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, GetModuleHandle(0), this);
     return (handle_ != NULL);
 }
 
@@ -28,7 +33,6 @@ void CMainWindow::Show(int cmdShow) {
 }
 
 void CMainWindow::OnCreate() {
-    g_snake_ = CSnakeGame(GetModuleHandle(0), handle_);
 }
 
 void CMainWindow::OnDestroy() {
@@ -40,6 +44,30 @@ void CMainWindow::OnNCCreate(HWND handle) {
 
 void CMainWindow::Update() {
     g_snake_.Update();
+}
+
+void CMainWindow::Draw() {
+    RECT client_rect;
+    GetClientRect(handle_, &client_rect);
+
+    HDC window_dc = GetDC(handle_);
+
+    HDC display_buffer_dc = CreateCompatibleDC(window_dc);
+    HBITMAP display_buffer = CreateCompatibleBitmap(window_dc, client_rect.right - client_rect.left,
+        client_rect.bottom - client_rect.top);
+    HGDIOBJ old_display_buffer = SelectObject(display_buffer_dc, display_buffer);
+
+    g_snake_.Draw(display_buffer_dc);
+
+    BitBlt(window_dc, client_rect.left, client_rect.top, client_rect.right - client_rect.left,
+        client_rect.bottom - client_rect.top, display_buffer_dc, 0, 0, SRCCOPY);
+
+    SelectObject(display_buffer_dc, old_display_buffer);
+    
+    DeleteObject(display_buffer);
+    DeleteDC(display_buffer_dc);
+
+    ReleaseDC(handle_, window_dc);
 }
 
 HWND CMainWindow::GetHandle() {

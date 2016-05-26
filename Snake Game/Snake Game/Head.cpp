@@ -1,20 +1,12 @@
 #include "Head.h"
 
-CHead::CHead() {
-}
-
-
-CHead::~CHead() {
-}
-
-void CHead::Update() {
-    motion_.Update();
-}
-
-CMotion CHead::GetMotion() const {
-    return motion_;
+CHead::CHead(int length) : length_(length) {
 }
 
 int CHead::GetLength() const {
     return length_;
+}
+
+void CHead::SetLength(int length) {
+    length_ = length;
 }

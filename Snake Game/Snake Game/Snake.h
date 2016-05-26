@@ -2,9 +2,8 @@
 
 #include "Entity.h"
 
-class CSnake : CEntity {
+class CSnake : public CEntity {
 public:
-    CSnake();
-    ~CSnake();
+    CSnake(int x, int y, int player);
 };
 

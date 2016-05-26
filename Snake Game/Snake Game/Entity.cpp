@@ -7,7 +7,7 @@ CEntity::CEntity() : is_initialized_(false) {
 CEntity::~CEntity() {
     for (auto it = components_.begin(); it != components_.end(); it++) {
         it->second->Cleanup();
-        delete &it;
+        delete (it->second);
     }
 }
 

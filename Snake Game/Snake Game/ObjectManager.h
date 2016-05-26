@@ -47,7 +47,7 @@ void CObjectManager<T>::MarkAdded(std::unique_ptr<T>& object) {
 
 template<typename T>
 void CObjectManager<T>::MarkRemoved(std::unique_ptr<T>& object) {
-    removed_.push_back(object);
+    removed_.push_back(std::move(object));
 }
 
 template<typename T>
@@ -58,21 +58,21 @@ void CObjectManager<T>::Clear() {
 template<typename T>
 void CObjectManager<T>::Update() {
     while (!added_.empty()) {
-        objects_.push_back(added_.back());
+        objects_.push_back(std::move(added_.back()));
         added_.pop_back();
     }
 
     while (!removed_.empty()) {
-        Remove(removed_.back());
+        Remove(std::move(removed_.back()));
         removed_.pop_back();
     }
 }
 
 template<typename T>
 void CObjectManager<T>::Remove(std::unique_ptr<T>& object) {
-    for (boost::ptr_vector<T>::iterator i = objects_.begin();
+    for (std::vector<std::unique_ptr<T>>::iterator i = objects_.begin();
     i != objects_.end(); i++) {
-        if (&*i == object) {
+        if (*i == 0) {
             objects_.erase(i);
             break;
         }

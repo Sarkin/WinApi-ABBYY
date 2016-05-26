@@ -2,6 +2,6 @@
 
 #include "SnakeGame.h"
 
-namespace Collision {
+namespace Decay {
     void Run(EntityManager& em, CSnakeGame& gsnake);
 }

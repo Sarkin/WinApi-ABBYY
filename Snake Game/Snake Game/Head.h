@@ -5,16 +5,12 @@
 
 class CHead : public CComponent {
 public:
-    CHead();
-    ~CHead();
+    CHead(int);
 
-    void Update();
-
-    CMotion GetMotion() const;
     int GetLength() const;
+    void SetLength(int);
 
 private:
-    CMotion motion_;
     int length_;
 };
 

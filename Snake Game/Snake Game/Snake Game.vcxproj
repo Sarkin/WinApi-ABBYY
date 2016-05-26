@@ -147,28 +147,37 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Body.cpp" />
+    <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Head.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Motion.cpp" />
+    <ClCompile Include="PlayerControlled.cpp" />
     <ClCompile Include="SnakeGame.cpp" />
-    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Snake.cpp" />
+    <ClCompile Include="Decay.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Trail.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Body.h" />
+    <ClInclude Include="Collision.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Decay.h" />
+    <ClInclude Include="Draw.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="Head.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Motion.h" />
     <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="PlayerControlled.h" />
     <ClInclude Include="SnakeGame.h" />
-    <ClInclude Include="Grid.h" />
     <ClInclude Include="Snake.h" />
-    <ClInclude Include="System.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="Trail.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

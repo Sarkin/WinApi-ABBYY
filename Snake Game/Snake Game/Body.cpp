@@ -1,14 +1,9 @@
 #include "Body.h"
 
-CBody::CBody() {
-}
+#include "Head.h"
+#include "Timer.h"
 
-CBody::CBody(CMotion motion, int timer) : motion_(motion), timer_(timer) {
-}
-
-CBody::~CBody() {
-}
-
-void CBody::Update() {
-    timer_--;
+CBody::CBody(int x, int y, int timer) {
+    Attach(new CMotion(x, y, Direction::Hold));
+    Attach(new CTimer(timer));
 }

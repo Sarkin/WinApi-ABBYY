@@ -24,7 +24,7 @@ int Run(CMainWindow& main_window) {
         MessageBox(0, L"Performance timer does not exist!", L"Error!", MB_OK);
         return 0;
     }
-    __int64 clocks_per_frame = timer_frequency * 10;
+    __int64 clocks_per_frame = timer_frequency / 5;
 
     __int64 curr_count;
     __int64 old_count;
@@ -40,13 +40,11 @@ int Run(CMainWindow& main_window) {
             QueryPerformanceCounter((LARGE_INTEGER *)&curr_count);
             if (curr_count > old_count) {
                 main_window.Update();
-
-                /*
-                DO WORK
-                */
+                main_window.Draw();
                 old_count += clocks_per_frame;
             }
         }
+
     }
     return (int)msg.wParam;
 }
