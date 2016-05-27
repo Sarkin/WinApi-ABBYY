@@ -13,7 +13,9 @@ namespace Trail {
                 int length = head->GetLength();
                 CMotion* motion = (*a)->GetComponent<CMotion>();
                 std::pair<int, int> coords = motion->GetCoords();;
-                grid.Add(coords, length);
+                if (IsInsideGrid(*motion, grid.GetGridSize())) {
+                    grid.Add(coords, length);
+                }
                 em.MarkAdded(std::unique_ptr<CEntity>(new CBody(coords.first, coords.second, length)));
             }
         }

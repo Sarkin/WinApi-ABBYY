@@ -6,6 +6,7 @@
 #include "Body.h"
 #include "Motion.h"
 #include "Food.h"
+#include "PlayerControlled.h"
 
 namespace Collision {
     void Run(EntityManager& em, CSnakeGame& gsnake) {
@@ -19,7 +20,7 @@ namespace Collision {
             }
         }
         for (auto a = em.begin(); a != em.end(); a++) {
-            if ((*a).get() == 0 || !(*a)->HasComponent<CMotion>() || !(*a)->HasComponent<CHead>()) {
+            if ((*a).get() == 0 || !(*a)->HasComponent<CPlayerControlled>()) {
                 continue;
             }
             CHead* head_a = (*a)->GetComponent<CHead>();
@@ -36,6 +37,8 @@ namespace Collision {
                         xy = grid.EatFood(xy.first, xy.second);
                         em.MarkAdded(std::unique_ptr<CEntity>(new CFood(xy.first, xy.second)));
                         em.MarkRemoved(*b);
+                    } else if (grid.Get(xy.first, xy.second) > 0 || (*b)->HasComponent<CHead>()) {
+                        gsnake.GameOver();
                     }
                 }
             }

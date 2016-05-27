@@ -25,7 +25,6 @@ int Run(CMainWindow& main_window) {
         MessageBox(0, L"Performance timer does not exist!", L"Error!", MB_OK);
         return 0;
     }
-    __int64 clocks_per_frame = timer_frequency / 15;
 
     __int64 curr_count;
     __int64 old_count;
@@ -34,6 +33,7 @@ int Run(CMainWindow& main_window) {
     MSG msg;
     ZeroMemory(&msg, sizeof(MSG));
     while (msg.message != WM_QUIT) {
+        __int64 clocks_per_frame = timer_frequency / main_window.GetSpeed() / 10;
         if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
             TranslateMessage(&msg);
             DispatchMessage(&msg);

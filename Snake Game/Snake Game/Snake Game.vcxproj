@@ -157,6 +157,7 @@
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Motion.cpp" />
     <ClCompile Include="PlayerControlled.cpp" />
+    <ClCompile Include="SettingsDialog.cpp" />
     <ClCompile Include="SnakeGame.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Snake.cpp" />
@@ -179,10 +180,15 @@
     <ClInclude Include="Motion.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="PlayerControlled.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SettingsDialog.h" />
     <ClInclude Include="SnakeGame.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Trail.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Snake Game.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

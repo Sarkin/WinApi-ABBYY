@@ -14,6 +14,7 @@ public:
     void Draw(HDC);
     void HandleInput(WPARAM, LPARAM);
     const std::vector<WPARAM>& GetKeys();
+    void Pause();
 
     void GameOver();
 
@@ -22,6 +23,7 @@ public:
 private:
     std::vector<WPARAM> keys_pressed_;
     bool game_over_;
+    int paused_;
     CGrid grid_;
     EntityManager em_;
 };

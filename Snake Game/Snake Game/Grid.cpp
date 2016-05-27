@@ -1,5 +1,7 @@
 #include "Grid.h"
 
+#include <random>
+
 #include "Draw.h"
 
 CGrid::CGrid(int grid_h, int grid_w, int tile_sz) : grid_h_(grid_h), grid_w_(grid_w), tile_sz_(tile_sz),
@@ -19,17 +21,28 @@ int CGrid::Get(int x, int y) const {
 }
 
 std::pair<int, int> CGrid::SpawnFood() {
+    std::pair<int, int> food_xy = GetFreeCell();
+    grid_[food_xy.first][food_xy.second] = -1;
+    return food_xy;
+}
+
+int CGrid::getRandomUniform(int a, int b) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(a, b);
+    return dis(gen);
+}
+
+std::pair<int, int> CGrid::GetFreeCell() {
     std::vector<std::pair<int, int>> free_cells;
-    for (int row = 0; row < grid_h_; row++) {
-        for (int col = 0; col < grid_w_; col++) {
+    for (int row = 2; row < grid_h_ - 2; row++) {
+        for (int col = 2; col < grid_w_ - 2; col++) {
             if (grid_[row][col] == 0) {
                 free_cells.push_back(std::make_pair(row, col));
             }
         }
     }
-    std::pair<int, int> food_xy = free_cells[rand() % free_cells.size()];
-    grid_[food_xy.first][food_xy.second] = -1;
-    return food_xy;
+    return free_cells[getRandomUniform(0, free_cells.size() - 1)];
 }
 
 std::pair<int, int> CGrid::EatFood(int x, int y) {

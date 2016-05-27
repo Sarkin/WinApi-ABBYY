@@ -10,6 +10,7 @@ public:
     std::pair<int, int> GetGridSize();
     int GetTileSize();
     int Get(int x, int y) const;
+    std::pair<int, int> GetFreeCell();
 
     std::pair<int, int> SpawnFood();
     std::pair<int, int> EatFood(int x, int y);
@@ -23,6 +24,8 @@ private:
     int grid_h_;
     int grid_w_;
     int tile_sz_;
+
+    int getRandomUniform(int a, int b);
 
     std::vector<std::vector<int>> grid_;
 };
