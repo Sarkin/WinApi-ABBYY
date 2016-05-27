@@ -12,12 +12,16 @@ public:
 
     void Update();
     void Draw(HDC);
+    void HandleInput(WPARAM, LPARAM);
+    const std::vector<WPARAM>& GetKeys();
+
+    void GameOver();
 
     CGrid& GetGrid();
-    std::pair<int, int> GetGridSize();
-    int GetTileSize();
 
 private:
+    std::vector<WPARAM> keys_pressed_;
+    bool game_over_;
     CGrid grid_;
     EntityManager em_;
 };

@@ -150,8 +150,10 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="Food.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Head.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Motion.cpp" />
     <ClCompile Include="PlayerControlled.cpp" />
@@ -169,8 +171,10 @@
     <ClInclude Include="Decay.h" />
     <ClInclude Include="Draw.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Food.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="Head.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Motion.h" />
     <ClInclude Include="ObjectManager.h" />

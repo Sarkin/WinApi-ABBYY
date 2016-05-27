@@ -9,9 +9,14 @@ public:
 
     std::pair<int, int> GetGridSize();
     int GetTileSize();
+    int Get(int x, int y) const;
+
+    std::pair<int, int> SpawnFood();
+    std::pair<int, int> EatFood(int x, int y);
 
     void Draw(HDC hdc);
 
+    void Add(int x, int y, int timer);
     void Add(std::pair<int, int> coords, int timer);
 
 private:

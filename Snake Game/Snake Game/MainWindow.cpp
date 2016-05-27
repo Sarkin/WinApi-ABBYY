@@ -18,14 +18,35 @@ bool CMainWindow::RegisterClassW() {
 }
 
 bool CMainWindow::Create() {
+    HMONITOR hmon = MonitorFromWindow(NULL,
+        MONITOR_DEFAULTTONEAREST);
+    MONITORINFO mi = { sizeof(mi) };
+    if (!GetMonitorInfo(hmon, &mi)) return NULL;
     DWORD dwStyle = WS_OVERLAPPEDWINDOW&~(WS_MAXIMIZEBOX | WS_THICKFRAME);
-    std::pair<int, int > grid_size = g_snake_.GetGridSize();
-    int tile_sz = g_snake_.GetTileSize();
+    std::pair<int, int > grid_size = g_snake_.GetGrid().GetGridSize();
+    int tile_sz = g_snake_.GetGrid().GetTileSize();
     RECT rc = { 0, 0, grid_size.second * tile_sz, grid_size.first * tile_sz };
     AdjustWindowRect(&rc, dwStyle, FALSE);
     handle_ = CreateWindowEx(0, class_name_, L"Snake Game",  dwStyle | WS_VISIBLE, 0,
         0, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, GetModuleHandle(0), this);
     return (handle_ != NULL);
+}
+
+HWND CMainWindow::CreateFullscreenWindow() {
+    HMONITOR hmon = MonitorFromWindow(NULL,
+        MONITOR_DEFAULTTONEAREST);
+    MONITORINFO mi = { sizeof(mi) };
+    if (!GetMonitorInfo(hmon, &mi)) return NULL;
+    DWORD dwStyle = WS_POPUP|WS_VISIBLE;
+    int tile_sz = g_snake_.GetGrid().GetTileSize();
+    RECT rc = mi.rcMonitor;
+    AdjustWindowRect(&rc, dwStyle, FALSE);
+    handle_ = CreateWindowEx(0, class_name_, L"Snake Game", WS_POPUP | WS_VISIBLE,
+        rc.left,
+        rc.top,
+        rc.right - rc.left,
+        rc.bottom - rc.top, NULL, NULL, GetModuleHandle(0), this);
+    return handle_;
 }
 
 void CMainWindow::Show(int cmdShow) {
@@ -109,6 +130,8 @@ LRESULT _stdcall CMainWindow::localWindowProc(HWND handle, UINT message, WPARAM 
     case WM_CREATE:
         OnCreate();
         break;
+    case WM_KEYDOWN:
+        g_snake_.HandleInput(wParam, lParam);
     default:
         return DefWindowProc(handle, message, wParam, lParam);
     }

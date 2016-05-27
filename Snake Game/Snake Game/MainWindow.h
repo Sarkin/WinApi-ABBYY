@@ -11,6 +11,7 @@ public:
 
     static bool RegisterClassW();
     bool Create();
+    HWND CreateFullscreenWindow();
     void Show(int cmdShow);
     void Update();
     void Draw();

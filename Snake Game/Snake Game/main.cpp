@@ -13,6 +13,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int nCmdShow) {
     if (!main_window.Create()) {
         return -1;
     }
+
     main_window.Show(nCmdShow);
 
     return Run(main_window);
@@ -24,7 +25,7 @@ int Run(CMainWindow& main_window) {
         MessageBox(0, L"Performance timer does not exist!", L"Error!", MB_OK);
         return 0;
     }
-    __int64 clocks_per_frame = timer_frequency / 5;
+    __int64 clocks_per_frame = timer_frequency / 15;
 
     __int64 curr_count;
     __int64 old_count;

@@ -14,6 +14,32 @@ int CGrid::GetTileSize() {
     return tile_sz_;
 }
 
+int CGrid::Get(int x, int y) const {
+    return grid_[x][y];
+}
+
+std::pair<int, int> CGrid::SpawnFood() {
+    std::vector<std::pair<int, int>> free_cells;
+    for (int row = 0; row < grid_h_; row++) {
+        for (int col = 0; col < grid_w_; col++) {
+            if (grid_[row][col] == 0) {
+                free_cells.push_back(std::make_pair(row, col));
+            }
+        }
+    }
+    std::pair<int, int> food_xy = free_cells[rand() % free_cells.size()];
+    grid_[food_xy.first][food_xy.second] = -1;
+    return food_xy;
+}
+
+std::pair<int, int> CGrid::EatFood(int x, int y) {
+    if (grid_[x][y] >= 0) {
+        return std::make_pair(x, y);
+    }
+    Add(x, y, 1);
+    return SpawnFood();
+}
+
 void CGrid::Draw(HDC hdc) {
     for (int row = 0; row < grid_h_; row++) {
         for (int col = 0; col < grid_w_; col++) {
@@ -32,6 +58,10 @@ void CGrid::Draw(HDC hdc) {
     }
 }
 
+void CGrid::Add(int x, int y, int timer) {
+    grid_[x][y] += timer;
+}
+
 void CGrid::Add(std::pair<int, int> coords, int timer) {
-    grid_[coords.first][coords.second] += timer;
+    Add(coords.first, coords.second, timer);
 }
